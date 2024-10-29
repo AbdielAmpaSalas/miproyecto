@@ -1,120 +1,189 @@
-body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
+:root {
+    /* Colores de la paleta */
+    --color-azul-oscuro: #003366;
+    --color-azul-medio: #00509e;
+    --color-azul-claro: #b0c4de;
+    --color-azul-brillante: #007bff;
+    --color-azul-hover: #003d80;
+    --color-blanco: #ffffff;
+    --color-fondo: #f0f8ff;
+    --color-exito: #cce5ff;
+    --color-error: #e6f7ff;
+    --color-error-texto: #721c24;
+
+    /* Ajustes generales */
+    --fuente-base: 16px;
+    --espaciado: 1rem;
+    --radio-borde: 8px;
+    --sombra-base: 0 4px 20px rgba(0, 0, 0, 0.15);
+
+    /* Duración de animaciones */
+    --duracion-transicion: 0.3s;
+    --duracion-fade-in: 1s;
+}
+
+* {
     margin: 0;
-    padding: 0; /* Cambiado a 0 para centrar verticalmente */
-    height: 100vh; /* Altura completa de la ventana */
-    display: flex; /* Usar flexbox */
-    justify-content: center; /* Centrar horizontalmente */
-    align-items: center; /* Centrar verticalmente */
-    background-image: url("../../fondo.jpg"); /* Corregido */
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: var(--fuente-base);
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: var(--color-fondo) url("../../fondo.jpg") center/cover no-repeat;
+    padding: 2rem;
+    opacity: 0;
+    animation: fadeIn var(--duracion-fade-in) ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 .container {
-    max-width: 800px;
-    background-color: #ffffff; /* Fondo blanco */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-width: 90%;
+    width: 800px;
+    padding: var(--espaciado);
+    background-color: var(--color-blanco);
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-base);
+    transform: scale(0.95);
+    transition: transform var(--duracion-transicion) ease-in-out;
+}
+
+.container:hover {
+    transform: scale(1);
 }
 
 h1, h2 {
-    color: #003366; /* Azul oscuro */
+    color: var(--color-azul-oscuro);
     text-align: center;
+    margin-bottom: var(--espaciado);
+    font-size: 1.5rem;
 }
 
 a {
     display: inline-block;
-    margin: 20px 0;
-    padding: 10px 15px;
-    background-color: #00509e; /* Azul medio */
-    color: white;
+    margin: var(--espaciado) 0;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-azul-medio);
+    color: var(--color-blanco);
     text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    border-radius: var(--radio-borde);
+    transition: background-color var(--duracion-transicion), transform var(--duracion-transicion);
 }
 
 a:hover {
-    background-color: #003d80; /* Azul más oscuro al pasar el ratón */
+    background-color: var(--color-azul-hover);
+    transform: translateY(-2px);
 }
 
 form {
-    margin-bottom: 20px;
+    margin-bottom: var(--espaciado);
 }
 
 input[type="text"], textarea, input[type="date"] {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #b0c4de; /* Azul claro para el borde */
-    border-radius: 4px;
-    transition: border-color 0.3s;
+    padding: 0.75rem;
+    margin-bottom: var(--espaciado);
+    border: 1px solid var(--color-azul-claro);
+    border-radius: var(--radio-borde);
+    transition: border-color var(--duracion-transicion), background-color var(--duracion-transicion);
+    font-size: 1rem;
 }
 
 input[type="text"]:focus, textarea:focus, input[type="date"]:focus {
-    border-color: #00509e; /* Azul medio al enfocar */
+    border-color: var(--color-azul-medio);
+    background-color: #f5f9ff;
+    transform: scale(1.02);
 }
 
 input[type="submit"], button, .button {
-    background-color: #007bff; /* Azul brillante */
-    color: white;
-    padding: 10px 15px;
+    background-color: var(--color-azul-brillante);
+    color: var(--color-blanco);
+    padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radio-borde);
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color var(--duracion-transicion), transform var(--duracion-transicion);
+    font-size: 1rem;
 }
 
 input[type="submit"]:hover, button:hover, .button:hover {
-    background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+    background-color: var(--color-azul-hover);
+    transform: scale(1.05);
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    margin: 0 auto; /* Centrar la tabla */
+    margin-top: var(--espaciado);
 }
 
 th, td {
+    padding: 0.75rem;
     text-align: left;
-    padding: 12px;
-    border-bottom: 1px solid #b0c4de; /* Azul claro para el borde */
+    border-bottom: 1px solid var(--color-azul-claro);
+    font-size: 1rem;
+    transition: background-color var(--duracion-transicion);
 }
 
 th {
-    background-color: #00509e; /* Azul medio para el encabezado */
-    color: white;
+    background-color: var(--color-azul-medio);
+    color: var(--color-blanco);
+}
+
+tr {
+    transition: background-color var(--duracion-transicion), transform var(--duracion-transicion);
 }
 
 tr:hover {
-    background-color: #e6f7ff; /* Azul muy claro al pasar el ratón */
+    background-color: var(--color-exito);
+    transform: scale(1.01);
 }
 
 .actions {
     display: flex;
-    gap: 10px;
+    gap: 0.5rem;
 }
 
 #formularioEdicion {
-    background-color: #f0f8ff; /* Fondo azul claro */
-    padding: 20px;
-    border-radius: 5px;
-    margin-top: 20px;
+    background-color: var(--color-fondo);
+    padding: var(--espaciado);
+    border-radius: var(--radio-borde);
+    margin-top: var(--espaciado);
+    animation: fadeIn var(--duracion-fade-in) ease-in-out;
+}
+
+.success, .error {
+    padding: var(--espaciado);
+    border-radius: var(--radio-borde);
+    margin-bottom: var(--espaciado);
+    font-size: 1rem;
+    transform: scale(0.95);
+    transition: transform var(--duracion-transicion) ease-in-out;
+}
+
+.success:hover, .error:hover {
+    transform: scale(1);
 }
 
 .success {
-    background-color: #cce5ff; /* Azul claro para el éxito */
-    color: #004085; /* Azul oscuro para el texto */
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 20px;
+    background-color: var(--color-exito);
+    color: var(--color-azul-oscuro);
 }
 
 .error {
-    background-color: #e6f7ff; /* Azul muy claro para el error */
-    color: #721c24; /* Color de texto oscuro */
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 20px;
+    background-color: var(--color-error);
+    color: var(--color-error-texto);
 }
