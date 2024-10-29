@@ -10,19 +10,27 @@ if (!isset($_GET['id'])) {
 $proyecto = obtenerProyectoPorId($_GET['id']);
 
 if (!$proyecto) {
-    header("Location: index.php?mensaje=Proyecto no encontrada");
+    header("Location: index.php?mensaje=Proyecto no encontrado");
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $count = actualizarProyecto($_GET['id'], $_POST['proyecto'], $_POST['descripcion'], $_POST['precio'], $_POST['fechaEntrega'], isset($_POST['entregado']));
-        if ($count > 0) {
-            header("Location: index.php?mensaje=Proyecto actualizada con éxito");
-            exit;
-        } else {
-            $error = "No se pudo actualizar el Proyecto.";
+        // Validación de datos y sanitización
+        $nombre = sanitizeInput($_POST['proyecto']);
+        $descripcion = sanitizeInput($_POST['descripcion']);
+        $color = sanitizeInput($_POST['color']);
+        $precio = filter_var($_POST['precio'], FILTER_VALIDATE_FLOAT);
+        $fechaEntrega = $_POST['fechaEntrega'];
+        $entregado = isset($_POST['entregado']);
+
+        if (!$precio) {
+            throw new Exception("El precio debe ser un número válido.");
         }
+
+        actualizarProyecto($_GET['id'], $nombre, $descripcion, $color, $precio, $fechaEntrega, $entregado);
+        header("Location: index.php?mensaje=Proyecto actualizado con éxito");
+        exit;
     } catch (Exception $e) {
         $error = $e->getMessage();
     }
@@ -44,12 +52,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
         <form method="POST">
             <label>Proyecto: <input type="text" name="proyecto" value="<?php echo htmlspecialchars($proyecto['proyecto']); ?>" required></label>
-            <label>Descripción: <input type="text" name="descripcion" value="<?php echo htmlspecialchars($proyecto['descripcion']); ?>" required></label>
-            <label>Color: <input type="color" name="color" value="" <?php echo htmlspecialchars($proyecto['color']);?> required></label>
-            <label>Precio S/.: <input type="text" name="precio" value="<?php echo htmlspecialchars($proyecto['precio']); ?>" required></label>
-            <label>Fecha de Entrega: <input type="date" name="fechaEntrega" value="<?php echo formatDate($proyecto['fechaEntrega']); ?>" required></label>
+            <label>Descripción: <input type="text" name="descripcion" value="<?php echo htmlspecialchars($proyecto['descripcion']); ?>" required></label><br>
+            <label>Color: <input type="color" name="color" value="<?php echo htmlspecialchars($proyecto['color']); ?>" required></label><br>
+            <label>Precio S/.: <input type="text" name="precio" value="<?php echo htmlspecialchars($proyecto['precio']); ?>" required></label><br>
+            <label>Fecha de Entrega: <input type="date" name="fechaEntrega" value="<?php echo htmlspecialchars(formatDate($proyecto['fechaEntrega'])); ?>" required></label><br>
             <label>Entregado: <input type="checkbox" name="entregado" <?php echo $proyecto['entregado'] ? 'checked' : ''; ?>></label>
-            <input type="submit" value="Actualizar Proyecto">
+            <input type="submit" value="Actualizar Proyecto" class="button">
         </form>
         <a href="index.php" class="button">Volver a la lista de Proyectos</a>
     </div>

@@ -2,8 +2,8 @@
 require_once __DIR__ . '/includes/functions.php';
 $mensaje = '';
 
-if (isset($_GET['accion']) && $_GET['accion'] === 'eliminar' && isset($_GET['id'])) {
-    $count = eliminarProyecto($_GET['id']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar') {
+    $count = eliminarProyecto($_POST['id']);
     $mensaje = $count > 0 ? "Proyecto eliminado con éxito." : "No se pudo eliminar el Proyecto.";
 }
 
@@ -26,6 +26,7 @@ $proyectos = obtenerProyecto();
             <?php echo $mensaje; ?>
         </div>
     <?php endif; ?>
+
     <h2>Lista de Proyectos</h2>
     <table>
         <tr>
@@ -49,7 +50,11 @@ $proyectos = obtenerProyecto();
             <td><?php echo $proyecto['entregado'] ? 'Sí' : 'No'; ?></td>
             <td class="actions">
                 <a href="editar_proyecto.php?id=<?php echo $proyecto['_id']; ?>" class="button">Editar</a>
-                <a href="index.php?accion=eliminar&id=<?php echo $proyecto['_id']; ?>" class="button" onclick="return confirm('¿Estás seguro de que quieres eliminar este proyecto?');">Eliminar</a>
+                <form method="POST" style="display:inline;">
+                    <input type="hidden" name="id" value="<?php echo $proyecto['_id']; ?>">
+                    <input type="hidden" name="accion" value="eliminar">
+                    <button type="submit" onclick="return confirm('¿Estás seguro de que quieres eliminar este proyecto?');">Eliminar</button>
+                </form>
             </td>
         </tr>
         <?php endforeach; ?>

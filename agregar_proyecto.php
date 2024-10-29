@@ -4,7 +4,18 @@ $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $id = crearProyecto($_POST['proyecto'], $_POST['descripcion'], $_POST['color'], $_POST['precio'], $_POST['fechaEntrega']);
+        // Validación básica de los datos
+        $proyecto = sanitizeInput($_POST['proyecto']);
+        $descripcion = sanitizeInput($_POST['descripcion']);
+        $color = sanitizeInput($_POST['color']);
+        $precio = filter_var($_POST['precio'], FILTER_VALIDATE_FLOAT);
+        $fechaEntrega = $_POST['fechaEntrega'];
+
+        if (!$precio) {
+            throw new Exception("El precio debe ser un número válido.");
+        }
+
+        crearProyecto($proyecto, $descripcion, $color, $precio, $fechaEntrega);
         header("Location: index.php?mensaje=Proyecto creado con éxito");
         exit;
     } catch (Exception $e) {
@@ -22,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="container">
-        <h1>Agregar Nueva Proyecto</h1>
+        <h1>Agregar Nuevo Proyecto</h1>
         <?php if ($error): ?>
             <div class="error"><?php echo $error; ?></div>
         <?php endif; ?>
@@ -32,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label>Color: <input type="color" name="color" required></label><br>
             <label>Precio S/.: <input type="text" name="precio" required></label><br>
             <label>Fecha de Entrega: <input type="date" name="fechaEntrega" required></label>
-            <input type="submit" value="Crear Proyecto">
+            <input type="submit" value="Crear Proyecto" class="button">
         </form>
         <a href="index.php" class="button">Volver a la lista de Proyectos</a>
     </div>

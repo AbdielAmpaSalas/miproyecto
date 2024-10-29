@@ -14,23 +14,25 @@ function crearProyecto($proyecto, $descripcion, $color, $precio, $fechaEntrega) 
 
     // Validación de datos
     if (!is_numeric($precio)) {
-        throw new InvalidArgumentException("El precio debe ser un número.");
+        throw new InvalidArgumentException("El precio debe ser numérico.");
     }
 
-    $resultado = $tasksCollection->insertOne([
-        'proyecto' => sanitizeInput($proyecto),
-        'descripcion' => sanitizeInput($descripcion),
-        'color' => sanitizeInput($color),
-        'precio' => sanitizeInput($precio),
-        'fechaEntrega' => new MongoDB\BSON\UTCDateTime(strtotime($fechaEntrega) * 1000),
-        'entregado' => false
+    $fechaEntrega = new MongoDB\BSON\UTCDateTime(new DateTime($fechaEntrega));
+    $entregado = false;
+
+    $tasksCollection->insertOne([
+        'proyecto' => $proyecto,
+        'descripcion' => $descripcion,
+        'color' => $color,
+        'precio' => (float)$precio,
+        'fechaEntrega' => $fechaEntrega,
+        'entregado' => $entregado
     ]);
-    return $resultado->getInsertedId();
 }
 
 function obtenerProyecto() {
     global $tasksCollection;
-    return $tasksCollection->find();
+    return $tasksCollection->find()->toArray();
 }
 
 function obtenerProyectoPorId($id) {
@@ -38,37 +40,25 @@ function obtenerProyectoPorId($id) {
     return $tasksCollection->findOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
 }
 
-function actualizarProyecto($id, $proyecto, $descripcion, $color, $precio, $fechaEntrega, $entregado) {
+function actualizarProyecto($id, $nombre, $descripcion, $color, $precio, $fechaEntrega, $entregado) {
     global $tasksCollection;
+    $fechaEntrega = new MongoDB\BSON\UTCDateTime(new DateTime($fechaEntrega));
 
-    if (!is_numeric($precio)) {
-        throw new InvalidArgumentException("El precio debe ser un número.");
-    }
-
-    // Validar formato de fecha
-    $fecha = DateTime::createFromFormat('d-m-Y', $fechaEntrega);
-    if (!$fecha) {
-        throw new InvalidArgumentException("La fecha de entrega no es válida.");
-    }
-
-    $resultado = $tasksCollection->updateOne(
+    $tasksCollection->updateOne(
         ['_id' => new MongoDB\BSON\ObjectId($id)],
         ['$set' => [
-            'proyecto' => sanitizeInput($proyecto),
-            'descripcion' => sanitizeInput($descripcion),
-            'color' => sanitizeInput($color),
-            'precio' => sanitizeInput($precio),
-            'fechaEntrega' => new MongoDB\BSON\UTCDateTime($fecha->getTimestamp() * 1000),
+            'proyecto' => $nombre,
+            'descripcion' => $descripcion,
+            'color' => $color,
+            'precio' => (float)$precio,
+            'fechaEntrega' => $fechaEntrega,
             'entregado' => $entregado
         ]]
     );
-    return $resultado->getModifiedCount();
 }
-
 
 function eliminarProyecto($id) {
     global $tasksCollection;
-    $resultado = $tasksCollection->deleteOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
-    return $resultado->getDeletedCount();
+    $result = $tasksCollection->deleteOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
+    return $result->getDeletedCount();
 }
-?>
